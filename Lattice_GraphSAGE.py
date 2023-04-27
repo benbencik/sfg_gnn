@@ -22,7 +22,8 @@ A data loader which merges data objects from a
 torch_geometric.data.Dataset to a mini-batch. 
 Data objects can be either of type Data or HeteroData.
 """
-gg = graph_generator.Generator()
+model = "ising"
+gg = graph_generator.Generator(model=model)
 dataset = [gg.lattice_graph(5,20) for _ in range(1000)]
 print(dataset[0])
 
@@ -35,8 +36,8 @@ test_loader = DataLoader(test_dataset, shuffle=True, batch_size=5)
 print(f"Number of training batches: {len(train_loader)}")
 print(f"Number of testing batches: {len(test_loader)}")
 
-
-in_features = 3
+if model == "ising": in_features = 1
+elif model == "heisenberg": in_features = 3
 out_features = 1
 
 model = torch_geometric.nn.models.GraphSAGE(
@@ -46,7 +47,7 @@ model = torch_geometric.nn.models.GraphSAGE(
     num_layers=4,
     jk='max'
 )
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 """ Model parameters """
 

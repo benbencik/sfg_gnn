@@ -5,8 +5,8 @@ import numpy
 import torch 
 
 class Generator():
-    def __init__(self) -> None:
-        pass
+    def __init__(self, model:str) -> None:
+        self.model = model
 
     def uniform_spin_generation(self, n):
         # generate random spin as 3d unit vector
@@ -27,15 +27,15 @@ class Generator():
 
         # networkx.draw(lattice)
         # matplotlib.pyplot.show()
-
-        spins = self.uniform_spin_generation(len(lattice.nodes))
+        if self.model == "heisenberg": spins = self.uniform_spin_generation(len(lattice.nodes))
+        elif self.model == "ising": spins = numpy.random.choice([-1, 1], size=(len(lattice.nodes), 1))
         for idx, node in enumerate(lattice.nodes()):
             lattice.nodes[node]['x'] = spins[idx]
             
         for edge in lattice.edges():
-            # weight = (numpy.random.random() * 2) - 1
+            weight = (numpy.random.random() * 2) - 1
             # weight = numpy.ones((len(edge_index[0])))
-            lattice.edges[edge]['edge_attr'] = 1
+            lattice.edges[edge]['edge_attr'] = weight
 
         energy = 0
         for n1 in lattice.nodes():
@@ -44,7 +44,8 @@ class Generator():
                 else: e_weight = lattice.edges[n2, n1]['edge_attr']
                 n1_spin = lattice.nodes[n1]['x']
                 n2_spin = lattice.nodes[n2]['x']
-                energy += float(numpy.dot(n1_spin, n2_spin) * e_weight)
+                if self.model == "heisenberg": energy += float(numpy.dot(n1_spin, n2_spin) * e_weight)
+                elif self.model == "ising": energy += float(n1_spin * n2_spin * e_weight)
         
         data = torch_geometric.utils.from_networkx(lattice)
         data.x = data.x.float()
