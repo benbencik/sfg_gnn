@@ -1,0 +1,114 @@
+\documentclass{article}
+
+\usepackage{fullpage} % pekné okraje
+\usepackage{fancyhdr} % pekný header
+\usepackage{graphicx, wrapfig} % obrázky
+\usepackage{enumerate} % pekný enumerate
+\usepackage{amsfonts} % napríklad na množiny N, Z, R, Q
+\usepackage[slovak]{babel}
+
+
+\setlength{\parindent}{0pt}
+\newcommand\hwnumber{3}
+\newcommand\Informationa{Benjamín Benčík}
+\newcommand\course{SFG}
+\newcommand\sada{}
+
+\lhead{\Informationa}
+\rhead{\today}
+\pagestyle{fancy}
+\headheight 35pt
+\headsep 1.5em
+
+\pagenumbering{roman}
+\cfoot{\small\thepage}
+
+
+
+\begin{document}
+
+\section*{Grafové neuronové siete}
+
+\section*{Úvod}
+Konvolučné neuronové siete sú v dnešnej dobe už známe a často používané na obrazových dátach, kde dosahujú veľmi dobré výsledky. Preto sa neskôr začali aplikovať aj na viac všeobecné grafové dáta. Obrázok si môžeme predstaviť, ako homogénny graf, kde každý vrchol reprezentuje pixel a hrany sú susedia daného pixelu. Všeobecné grafy môžu mať ďaleko komplexnejšiu štruktúru, teda je aj konvolučná vrstva komplikovanejšia. To však umožňuje riešiť širšiu škálu problémov, a preto našli grafové neurónové siete svoje uplatnenie aj v oblasti fyziky kondenzovaných látok.
+
+\section*{Popis úlohy}
+Cieľom práce boli nasledovné 3 body: 
+\begin{enumerate}
+    \item Vytvorenie rešerše súčasného stavu literatúry na tému grafových neurónových sietí a ich
+    využitia v oblasti kondenzovaných látok.
+    \item Vytvorenie jednoduchého programu implementujúceho grafovú neurónovú sieť pomocou jazyku
+    Python a balíka TensorFlow
+    \item Analýza možností využiteľnosti grafových neurónových sietí v aktuálnom výskume magnetických
+    fázových prechodov na katedre fyziky kondenzovaných látok
+\end{enumerate}
+
+Úlohou práce bolo natrénovať grafovú neurónovú sieť na odhadovanie vlastností systémov častíc. Jednalo sa o regresné úlohy, kde mala sieť predikovať celkovú energiu systému. V projekte som pracoval s dvoma fyzikálnymi modelmi na popisovanie magnetických materiálov:
+\begin{enumerate}
+    \item \textit{Isingov model}: opisuje sústavu interagujúcich častíc so spinmi s hodnotami $\{-1, 1\}$. V grafe je interakcia medzi časticami reprezentovaná, ako hrana s nejakou váhou. Každý vrchol grafu opisuje práve jednu časticu.
+    \item \textit{Heisenbergov model} funguje veľmi podobne, ako Isingov s tým, že každý spin je reprezentovaný, ako 3-dimenzionálny jednotkový vektor.
+\end{enumerate}  
+
+
+Pre oba modely som počítali energiu, ktorá je určená, ako Hamiltonián: $\sum_{<i,j>} J_{i,j}\sigma_i \sigma_j$. Dôvod na použitie Isingovho modelu bol v ten, že je o niečo jednoduchší. Preto sa hodilo sieť vyskúšať na jednoduchej úlohe ju ďalej rozšíriť. V prípade Heisenbergovho modelu sme chceli overiť, či sieť dokáže problém zovšeobecniť a pracovať aj s viacero dimenziami.
+
+
+\section*{Rešerš}
+\subsubsection*{Kovolučná vrstva} 
+Zaveďme notácie pre graf $G=(V,E)$ na ktorom opíšem aktualizovanie parametrov. Nech každému $v_i \in V$ je priradený vektor $h_i$, ktorý obsahuje skryté príznaky neurónovej siete. Spojitosť grafu je reprezentovaná, ako matica susednosti $A$ kde $(v_i, v_j) \in E \rightarrow A_{ij} = 1$ opačne 0. Potom ešte treba definovať maticu $W$, čo je matica trénovateľných váh, ktorú môžeme chápať, ako bežnú lineárnu plne prepojenú vrstvu. Formy predikcie, ktoré sa dajú robiť na grafoch sú nasledovné:
+\begin{enumerate}
+    \item Predikcia na vrcholoch: $f(h_i)$
+    \item Predikcia na celom grafe: $f(\sum_i h_i)$
+    \item Predikcia spojení: $f(h_i, h_j, e_{ij})$
+\end{enumerate}
+
+V prípade toho projektu chceme predikovať vlastnosť, ktorá sa týka celého grafu. Zvyčajne sa na konci siete pridáva poolingová vrstva na zmenšenie výstupu. V tomto projekte sme používali average pooling alebo sum pooling.
+
+\subsubsection*{Aktualizácia parametrov}
+Všeobecnú aktualizáciu skrytých príznakov vrcholov s aktivačnou funkciou $ReLu$ značenou, ako $\sigma$ môžeme formulovať: $H' = \sigma(AHW)$. Maticové násobenie $AH$ efektívne skombinuje informácie z okolia daného vrcholu do jedného vektoru. Lineárna vrstva reprezentovaná $W$ sa aplikuje pri každej konvolúcii. Umožňuje použiť znalosti z deep learningu a vytvoriť komplexnejšie modely. Na tejto vrstve je potrebné opraviť dve veci:
+\begin{enumerate}
+    \item Ak v grafe nie je slučka tak sieť nebude pracovať s informáciou v totožnom vrchole. To sa dá vyriešiť jednoducho tak, že maticu susednosti prenásobím identitou. Budem používať $\overline{A} = A I$
+    \item Ak budem pri trénovaní opakovane násobiť maticou susednosti, tak hodnoty môžu narásť do extrémnych hodnôť, ktoré nebude možné reprezenovať v bežných dátových typoch počítača. Preto sa oplatí celý výraz ešte normalizovať pomocou diagonálnej matice $D_{ii} = \sum_{j=0} \overline{A_{ij}}$.
+\end{enumerate}
+
+Finálne pravidlo na aktualizovanie skrytých váh bude:
+$$H' = \sigma(D^{-\frac{1}{2}} \overline{A} D^{-\frac{1}{2}} XW) $$
+
+Tým sme práve odvodili známu vrstvu GCNConv \cite{GCN}. Je to jedna z najčastejšie používaných vrstiev na grafové neurónové siete pre jednoduchosť a efektivitu. Vrstva GCN však priamo nepodporuje grafy s váženými hranami. Na to sa často používa MPNN (Message Passing Neural Network), ktorá je zložitejšia a dokáže rozpoznať aj komplexnejšie vzťahy. To má za následok aj veľkú výpočtovú náročnosť preto sa dá MPNN použiť len na menšie grafy. Alternatíva ktorú môžeme zvoliť medzi týmito dvoma vrstvami je GAT (Graph Attention Network), ktorá používa attention mechanism na pridelenie váh jednotlivým vrcholom v grafe. Tieto váhy hovoria, ako veľmi sa dva vrcholy navzájom ovplyvňujú. To umožňuje GAT flexibilnejšie a presnejšie zohľadňovať informácie z okolitých vrcholov a prispôsobiť sa rôznym grafovým dátam. \cite{GAT}
+
+
+\subsubsection*{Dostupné knižnice}
+Medzi momentálne dostupné knižnice na prácu s grafovými neurónovými sieťami patria: Pytorch Geometric, Deep Graph Library, Graph Nets alebo TensorFlow GNN. Pôvodným plánom projektu bolo natrénovať sieť v Tensorflow GNN, ktorá má širokú škálu funkcionalít. Knižnica je postavená veľmi robustne ale mal som problém sa v nej zorientovať. Napokon som sa rozhodol projekt programovať Pytorch Geometric, pretože má neporovnateľne lepšiu dokumentáciu aj s názornými príkladmi.
+
+
+\section*{Implementácia}
+\subsubsection*{Generovanie dát}
+Pre túto úlohu bolo najvhodnejšie dáta generovať, čo nám dávalo prakticky neobmedzenú trénovaciu množinu. Sieť som trénoval na dvoch typoch grafov: na ceste a periodickej mriežke. Pod periodickou mriežkou si môžeme predstaviť bežnú mriežku $N \times N$ a množinu vrcholov $V$ s pridanými hranami medzi prvými a poslednými vrcholom. Teda pre vrchol $V_{0,0}$ by sme pridali hrany $(V_{0, 0}, V_{0, n}), (V_{0, 0}, V_{n, 0}), (V_{0, 0}, V_{n, n})$. Všetky hodnoty váh boli generované z normálneho rozdelenia s nulovým priemerom a jednotkovou štandardnou odchýlkou pomocou knižnice random v jazyku Python. Na Isingovom modeli som vyberal kladný alebo záporný spin z Bernoulliho distribúcie a v Heisenbergovom modeli boli vektory spinu vyberané pomocou unifromne náhodne generovaných uhlov, ktoré udávali jeho smer.
+
+
+\subsubsection*{Architektúra siete}
+V prípade Isingového modelu bol počet vstupných príznakov 1 a pre Heisenbergov model 3, pretože spin vrcholu bol reprezentovaný 3D vektorom. V oboch prípadoch mali výstupné parametre vrcholov dimenziu 1. 
+
+Všetky siete, ktoré som trénoval pozostávali s nejakého počtu konvolučných vrstiev za ktorou nasledovalo plne prepojené vrstvy a na konci poolingová vrstva, pričom najlepšie fungoval sum pooling. S veľkosťou siete a počtami parametrov som už experimentoval. Napríklad pre Isingov model úplne stačila sieť s jednou konvolučnou a jednou plne prepojenou vrstvou kde oba mali 8 neurónov. Pre Heisenbergov to už nestačilo a musel som pridať počet vrstiev aby som dosiahol dobré výsledky.  
+
+\subsection*{Výsledky}
+Trénovanie na Isingovom modeli s datasetom veľkosti 2500 grafov na 25 epoch trvalo na bežnom notebooku 15-20 sekúnd. Pričom loss dosahoval okolo $10^{-4}$ 
+\begin{center}
+    \includegraphics*[scale=0.2]{ising_path.png}
+\end{center}
+
+Trénovanie na Isingovom modeli s datasetom veľkosti 1000 grafov na 25 epoch trvalo na bežnom notebooku 90 sekúnd. Pričom loss dosahoval okolo $10^{-1}$ 
+
+\begin{center}
+    \includegraphics*[scale=0.28]{heisenberg_path.png}
+\end{center}
+
+
+\section*{Záver}
+Na tomto konkrétnom prípade sme boli schopný natrénovať sieť s pomerne dobrou presnosťou. Je však aj potrebné spomenúť, že sme sa snažili naučiť model pomerne jednoduchý vzťah \dots.
+
+\bibliographystyle{plain}
+\bibliography{bibfile.bib}
+
+
+\end{document}
