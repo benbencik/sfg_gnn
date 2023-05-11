@@ -30,7 +30,7 @@
 \section*{Grafové neuronové siete}
 
 \section*{Úvod}
-Konvolučné neuronové siete sú v dnešnej dobe už známe a často používané na obrazových dátach, kde dosahujú veľmi dobré výsledky. Preto sa neskôr začali aplikovať aj na viac všeobecné grafové dáta. Obrázok si môžeme predstaviť, ako homogénny graf, kde každý vrchol reprezentuje pixel a hrany sú susedia daného pixelu. Všeobecné grafy môžu mať ďaleko komplexnejšiu štruktúru, teda je aj konvolučná vrstva komplikovanejšia. To však umožňuje riešiť širšiu škálu problémov, a preto našli grafové neurónové siete svoje uplatnenie aj v oblasti fyziky kondenzovaných látok.
+Konvolučné neuronové siete sú v dnešnej dobe už známe a často používané na obrazových dátach, kde dosahujú veľmi dobré výsledky. Preto sa neskôr začali aplikovať aj na grafové dáta. Obrázok si môžeme predstaviť, ako homogénny graf, kde každý vrchol reprezentuje pixel a hrany sú susedia daného pixelu. Všeobecné grafy môžu mať ďaleko komplexnejšiu štruktúru, teda je aj konvolučná vrstva komplikovanejšia. To však umožňuje riešiť širšiu škálu problémov, a preto našli grafové neurónové siete svoje uplatnenie aj v oblasti fyziky kondenzovaných látok.
 
 \section*{Popis úlohy}
 Cieľom práce boli nasledovné 3 body: 
@@ -50,8 +50,9 @@ Cieľom práce boli nasledovné 3 body:
 \end{enumerate}  
 
 
-Pre oba modely som počítali energiu, ktorá je určená, ako Hamiltonián: $\sum_{<i,j>} J_{i,j}\sigma_i \sigma_j$. Dôvod na použitie Isingovho modelu bol v ten, že je o niečo jednoduchší. Preto sa hodilo sieť vyskúšať na jednoduchej úlohe ju ďalej rozšíriť. V prípade Heisenbergovho modelu sme chceli overiť, či sieť dokáže problém zovšeobecniť a pracovať aj s viacero dimenziami.
-
+Pre oba modely sme počítali energiu, ktorá je určená Hamiltoniánom: 
+$$\sum_{<i,j>} J_{i,j}\sigma_i \sigma_j$$
+kde $<i,j>$ je interakcia medzi najbližšími susedmi, $J_{ij}$ je výmenná interakcia medzi $i$-tym a $j$-tym spinom a $\sigma_i, \sigma_j$, sú hodnoty spinu $\pm 1$. Dôvod na použitie Isingovho modelu bol ten, že je o niečo jednoduchší. Preto sa hodilo sieť vyskúšať na jednoduchej úlohe a neskôr ju ďalej rozšíriť. V prípade Heisenbergovho modelu sme chceli overiť, či sieť dokáže problém zovšeobecniť a pracovať aj s viacero dimenziami. Hamiltonián pre Heisenbergov model vyzerá nasledovne: $\sum_{<i,j>} J_{i,j} {\bf s}_i \cdot {\bf s}_j$ kde oba vektory spinov sú jednotkové, teda platí $|{\bf s}_i| = |{\bf s}_j| = 1$.
 
 \section*{Rešerš}
 \subsubsection*{Kovolučná vrstva} 
@@ -68,7 +69,7 @@ V prípade toho projektu chceme predikovať vlastnosť, ktorá sa týka celého 
 Všeobecnú aktualizáciu skrytých príznakov vrcholov s aktivačnou funkciou $ReLu$ značenou, ako $\sigma$ môžeme formulovať: $H' = \sigma(AHW)$. Maticové násobenie $AH$ efektívne skombinuje informácie z okolia daného vrcholu do jedného vektoru. Lineárna vrstva reprezentovaná $W$ sa aplikuje pri každej konvolúcii. Umožňuje použiť znalosti z deep learningu a vytvoriť komplexnejšie modely. Na tejto vrstve je potrebné opraviť dve veci:
 \begin{enumerate}
     \item Ak v grafe nie je slučka tak sieť nebude pracovať s informáciou v totožnom vrchole. To sa dá vyriešiť jednoducho tak, že maticu susednosti prenásobím identitou. Budem používať $\overline{A} = A I$
-    \item Ak budem pri trénovaní opakovane násobiť maticou susednosti, tak hodnoty môžu narásť do extrémnych hodnôť, ktoré nebude možné reprezenovať v bežných dátových typoch počítača. Preto sa oplatí celý výraz ešte normalizovať pomocou diagonálnej matice $D_{ii} = \sum_{j=0} \overline{A_{ij}}$.
+    \item Ak pri trénovaní opakovane násobím maticou susednosti, tak čísla môžu narásť do extrémnych hodnôt, ktoré nebude možné reprezentovať v bežných dátových typoch počítača. Preto sa oplatí celý výraz ešte normalizovať pomocou diagonálnej matice $D_{ii} = \sum_{j=0} \overline{A_{ij}}$.
 \end{enumerate}
 
 Finálne pravidlo na aktualizovanie skrytých váh bude:
@@ -83,21 +84,21 @@ Medzi momentálne dostupné knižnice na prácu s grafovými neurónovými sieť
 
 \section*{Implementácia}
 \subsubsection*{Generovanie dát}
-Pre túto úlohu bolo najvhodnejšie dáta generovať, čo nám dávalo prakticky neobmedzenú trénovaciu množinu. Sieť som trénoval na dvoch typoch grafov: na ceste a periodickej mriežke. Pod periodickou mriežkou si môžeme predstaviť bežnú mriežku $N \times N$ a množinu vrcholov $V$ s pridanými hranami medzi prvými a poslednými vrcholom. Teda pre vrchol $V_{0,0}$ by sme pridali hrany $(V_{0, 0}, V_{0, n}), (V_{0, 0}, V_{n, 0}), (V_{0, 0}, V_{n, n})$. Všetky hodnoty váh boli generované z normálneho rozdelenia s nulovým priemerom a jednotkovou štandardnou odchýlkou pomocou knižnice random v jazyku Python. Na Isingovom modeli som vyberal kladný alebo záporný spin z Bernoulliho distribúcie a v Heisenbergovom modeli boli vektory spinu vyberané pomocou unifromne náhodne generovaných uhlov, ktoré udávali jeho smer.
+Pre túto úlohu bolo najvhodnejšie dáta generovať, čo dávalo prakticky neobmedzenú trénovaciu množinu. Sieť som trénoval na dvoch typoch grafov: na ceste a na mriežke s periodickými okrajovými podmienkami. Pod takouto mriežkou si môžeme predstaviť mriežku $N \times N$ a množinu vrcholov $V$ s pridanými hranami medzi okrajovými vrcholmi. Teda pre vrchol $V_{0,0}$ by sme pridali hrany $(V_{0, 0}, V_{0, n}), (V_{0, 0}, V_{n, 0}), (V_{0, 0}, V_{n, n})$. Všetky hodnoty váh boli generované z normálneho rozdelenia s nulovým priemerom a jednotkovou štandardnou odchýlkou pomocou knižnice random v jazyku Python. Na Isingovom modeli som vyberal kladný alebo záporný spin z Bernoulliho distribúcie a v Heisenbergovom modeli boli vektory spinu vyberané pomocou unifromne náhodne generovaných uhlov, ktoré udávali jeho smer.
 
 
 \subsubsection*{Architektúra siete}
-V prípade Isingového modelu bol počet vstupných príznakov 1 a pre Heisenbergov model 3, pretože spin vrcholu bol reprezentovaný 3D vektorom. V oboch prípadoch mali výstupné parametre vrcholov dimenziu 1. 
+V prípade Isingovho modelu bol počet vstupných príznakov 1 a pre Heisenbergov model 3, pretože spin vrcholu bol reprezentovaný 3D vektorom. V oboch prípadoch mali výstupné parametre vrcholov dimenziu 1. 
 
-Všetky siete, ktoré som trénoval pozostávali s nejakého počtu konvolučných vrstiev za ktorou nasledovalo plne prepojené vrstvy a na konci poolingová vrstva, pričom najlepšie fungoval sum pooling. S veľkosťou siete a počtami parametrov som už experimentoval. Napríklad pre Isingov model úplne stačila sieť s jednou konvolučnou a jednou plne prepojenou vrstvou kde oba mali 8 neurónov. Pre Heisenbergov to už nestačilo a musel som pridať počet vrstiev aby som dosiahol dobré výsledky.  
+Všetky siete, ktoré som trénoval pozostávali s nejakého počtu konvolučných vrstiev za ktorou nasledovali plne prepojené vrstvy a na konci poolingová vrstva, pričom najlepšie fungoval sum pooling. S veľkosťou siete a počtami parametrov som už experimentoval. Napríklad pre Isingov model úplne stačila sieť s jednou konvolučnou a jednou plne prepojenou vrstvou, ktoré mali 8 skrytých príznakov. Pre Heisenbergov to už nestačilo a musel som pridať počet vrstiev aby som dosiahol dobré výsledky.  
 
 \subsection*{Výsledky}
-Trénovanie na Isingovom modeli s datasetom veľkosti 2500 grafov na 25 epoch trvalo na bežnom notebooku 15-20 sekúnd. Pričom loss dosahoval okolo $10^{-4}$ 
+Trénovanie na Isingovom modeli s datasetom veľkosti 2500 grafov, kde každý mal 100 vrcholov trvalo na 25 epoch na bežnom notebooku 15-20 sekúnd. Pričom loss dosahoval okolo $10^{-4}$.
 \begin{center}
     \includegraphics*[scale=0.2]{ising_path.png}
 \end{center}
 
-Trénovanie na Isingovom modeli s datasetom veľkosti 1000 grafov na 25 epoch trvalo na bežnom notebooku 90 sekúnd. Pričom loss dosahoval okolo $10^{-1}$ 
+Trénovanie na Isingovom modeli s datasetom veľkosti 1000 grafov opať so 100 vrcholmi trvalo na 25 epoch na bežnom notebooku 90 sekúnd. Najlepší loss sa mi podarilo dosiahnuť okolo $10^{-1}$.
 
 \begin{center}
     \includegraphics*[scale=0.28]{heisenberg_path.png}
@@ -105,7 +106,11 @@ Trénovanie na Isingovom modeli s datasetom veľkosti 1000 grafov na 25 epoch tr
 
 
 \section*{Záver}
-Na tomto konkrétnom prípade sme boli schopný natrénovať sieť s pomerne dobrou presnosťou. Je však aj potrebné spomenúť, že sme sa snažili naučiť model pomerne jednoduchý vzťah \dots.
+Na tomto konkrétnom prípade sme boli schopný natrénovať sieť s vhodnou presnosťou. Je však aj potrebné spomenúť, že sme sa snažili naučiť model pomerne jednoduchý vzťah, a preto by bolo potrebné učenie odskúšať na komplexnejších úlohách.
+
+\newblock
+
+Pri potenciálnom pokračovaní by som opäť zvolil Python, kvôli širokej dostupnosti balíčkov v oblasti strojového učenia. Väčšina z nich je implementovaná v nízko úrovňových jazykoch, teda efektivita trénovania nie je problém. Balíčky, ktoré by boli vhodné sú určite Pytorch Geometric a Tensorflow GNN, pričom odporúčam začať s balíčkom Pytorch, ktorý je lepšie zdokumentovaný a ľahší na pochopenie. Výhodou grafových sietí je, že dokážu lepšie pracovať so štruktúrou dát a vyjadriť interakcie medzi nimi, čo môže byť užitočné napríklad pri skúmaní spomínaných magnetických fázových prechodov. Vo všeobecnosti sú komplexnejšie, ako bežné neurónové siete. Okrem toho sú aj jednoduchšie interpretovateľné, čo má za následok, že sa dá ľahšie skúmať, ako sa model správa a na základe čoho robí svoje predikcie. Samozrejme grafové siete sú aplikovateľné na menšiu množinu úloh avšak verím, že pri správnom formulovaní problému môžu posunúť výskum vo fyzike dopredu.
 
 \bibliographystyle{plain}
 \bibliography{bibfile.bib}

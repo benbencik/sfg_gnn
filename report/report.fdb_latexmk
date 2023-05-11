@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex report"] 1683449336 "report.aux" "report.bbl" "report" 1683450637 0
+["bibtex report"] 0 "report.aux" "report.bbl" "report" 1683839084 -1
   "./bibfile.bib" 1683449315 742 80927ca2d1b77a98cfc7b5817037d767 ""
   "/usr/share/texmf-dist/bibtex/bst/base/plain.bst" 1680514707 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "report.aux" 1683450637 294 f57dda83efda65821703eb59818cb460 "pdflatex"
+  "report.aux" 1683839084 294 f57dda83efda65821703eb59818cb460 "pdflatex"
   (generated)
   "report.bbl"
   "report.blg"
   (rewritten before read)
-["pdflatex"] 1683450637 "/home/benb/Documents/code/projects/sfg/report/report.tex" "report.pdf" "report" 1683450637 0
-  "/home/benb/Documents/code/projects/sfg/report/report.tex" 1683450636 9099 a3189c50b8efb81b5ebc2f1ea47f96f2 ""
+["pdflatex"] 1683839083 "/home/benb/Documents/code/projects/sfg/report/report.tex" "report.pdf" "report" 1683839084 0
+  "/home/benb/Documents/code/projects/sfg/report/report.tex" 1683839083 10671 0487ae4203a9002b28b5343a05cf074a ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1680514707 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1680514707 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm" 1680514707 916 f87d7c45f9c908e672703b83b72241a3 ""
@@ -19,6 +19,8 @@
   "/usr/share/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm" 1680514707 940 228d6584342e91276bf566bcf9716b83 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1680514707 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1680514707 1324 c910af8c371558dc20f2d7822f66fe64 ""
+  "/usr/share/texmf-dist/fonts/tfm/public/cm/cmbx5.tfm" 1680514707 1332 f817c21a1ba54560425663374f1b651a ""
+  "/usr/share/texmf-dist/fonts/tfm/public/cm/cmbx7.tfm" 1680514707 1336 3125ccb448c1a09074e3aa4a9832f130 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmr12.tfm" 1680514707 1288 655e228510b4c2a1abe905c368440826 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmr9.tfm" 1680514707 1292 6b21b9c2c7bebb38aa2273f7ca0fb3af ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmti10.tfm" 1680514707 1480 aa8e34af0eb6a2941b776984cf1dfdc4 ""
@@ -71,9 +73,9 @@
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1681283329 8204103 9ef1f546cda4224d8806e8c6506b8515 ""
   "heisenberg_path.png" 1682630336 101455 702cbb61408365742cc9c885a1a73565 ""
   "ising_path.png" 1682629668 183287 69e835f9870e2159e233bd4e5076ac54 ""
-  "report.aux" 1683450637 294 f57dda83efda65821703eb59818cb460 "pdflatex"
-  "report.bbl" 1683449336 444 23e586b67207d31dd29facf9077b6ad2 "bibtex report"
-  "report.tex" 1683450636 9099 a3189c50b8efb81b5ebc2f1ea47f96f2 ""
+  "report.aux" 1683839084 294 f57dda83efda65821703eb59818cb460 "pdflatex"
+  "report.bbl" 1683832094 444 23e586b67207d31dd29facf9077b6ad2 "bibtex report"
+  "report.tex" 1683839083 10671 0487ae4203a9002b28b5343a05cf074a ""
   (generated)
   "report.aux"
   "report.log"
