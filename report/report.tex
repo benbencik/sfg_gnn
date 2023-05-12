@@ -30,7 +30,7 @@
 \section*{Grafové neuronové siete}
 
 \section*{Úvod}
-Konvolučné neuronové siete sú v dnešnej dobe už známe a často používané na obrazových dátach, kde dosahujú veľmi dobré výsledky. Preto sa neskôr začali aplikovať aj na grafové dáta. Obrázok si môžeme predstaviť, ako homogénny graf, kde každý vrchol reprezentuje pixel a hrany sú susedia daného pixelu. Všeobecné grafy môžu mať ďaleko komplexnejšiu štruktúru, teda je aj konvolučná vrstva komplikovanejšia. To však umožňuje riešiť širšiu škálu problémov, a preto našli grafové neurónové siete svoje uplatnenie aj v oblasti fyziky kondenzovaných látok.
+Konvolučné neuronové siete sú v dnešnej dobe známe a často používané na obrazových dátach, kde dosahujú veľmi dobré výsledky. Preto sa neskôr začali aplikovať aj na grafové dáta. Obrázok si môžeme predstaviť, ako homogénny graf, kde každý vrchol reprezentuje pixel a hrany sú susedia daného pixelu. Všeobecné grafy môžu mať ďaleko komplexnejšiu štruktúru, teda je aj konvolučná vrstva komplikovanejšia. To však umožňuje riešiť širšiu škálu problémov, a preto našli grafové neurónové siete svoje uplatnenie aj v oblasti fyziky kondenzovaných látok.
 
 \section*{Popis úlohy}
 Cieľom práce boli nasledovné 3 body: 
@@ -68,7 +68,7 @@ V prípade toho projektu chceme predikovať vlastnosť, ktorá sa týka celého 
 \subsubsection*{Aktualizácia parametrov}
 Všeobecnú aktualizáciu skrytých príznakov vrcholov s aktivačnou funkciou $ReLu$ značenou, ako $\sigma$ môžeme formulovať: $H' = \sigma(AHW)$. Maticové násobenie $AH$ efektívne skombinuje informácie z okolia daného vrcholu do jedného vektoru. Lineárna vrstva reprezentovaná $W$ sa aplikuje pri každej konvolúcii. Umožňuje použiť znalosti z deep learningu a vytvoriť komplexnejšie modely. Na tejto vrstve je potrebné opraviť dve veci:
 \begin{enumerate}
-    \item Ak v grafe nie je slučka tak sieť nebude pracovať s informáciou v totožnom vrchole. To sa dá vyriešiť jednoducho tak, že maticu susednosti prenásobím identitou. Budem používať $\overline{A} = A I$
+    \item Ak v grafe nie je slučka tak vrchol pri vyššie popísanej aktualizácii parametrov stráca informácie, ktoré sa v ňom nachádzajú. To sa dá vyriešiť jednoducho tak, že k matici susednosti pripočítam identitu, a tak zaručím, že v každom vrchole je slučka. Budem teda používať $\overline{A} = A + I$
     \item Ak pri trénovaní opakovane násobím maticou susednosti, tak čísla môžu narásť do extrémnych hodnôt, ktoré nebude možné reprezentovať v bežných dátových typoch počítača. Preto sa oplatí celý výraz ešte normalizovať pomocou diagonálnej matice $D_{ii} = \sum_{j=0} \overline{A_{ij}}$.
 \end{enumerate}
 
@@ -98,7 +98,7 @@ Trénovanie na Isingovom modeli s datasetom veľkosti 2500 grafov, kde každý m
     \includegraphics*[scale=0.2]{ising_path.png}
 \end{center}
 
-Trénovanie na Isingovom modeli s datasetom veľkosti 1000 grafov opať so 100 vrcholmi trvalo na 25 epoch na bežnom notebooku 90 sekúnd. Najlepší loss sa mi podarilo dosiahnuť okolo $10^{-1}$.
+Trénovanie na Isingovom modeli s datasetom veľkosti 1000 grafov opäť so 100 vrcholmi trvalo na 25 epoch na bežnom notebooku 90 sekúnd. Najlepší loss sa mi podarilo dosiahnuť okolo $10^{-1}$.
 
 \begin{center}
     \includegraphics*[scale=0.28]{heisenberg_path.png}
@@ -110,7 +110,7 @@ Na tomto konkrétnom prípade sme boli schopný natrénovať sieť s vhodnou pre
 
 \newblock
 
-Pri potenciálnom pokračovaní by som opäť zvolil Python, kvôli širokej dostupnosti balíčkov v oblasti strojového učenia. Väčšina z nich je implementovaná v nízko úrovňových jazykoch, teda efektivita trénovania nie je problém. Balíčky, ktoré by boli vhodné sú určite Pytorch Geometric a Tensorflow GNN, pričom odporúčam začať s balíčkom Pytorch, ktorý je lepšie zdokumentovaný a ľahší na pochopenie. Výhodou grafových sietí je, že dokážu lepšie pracovať so štruktúrou dát a vyjadriť interakcie medzi nimi, čo môže byť užitočné napríklad pri skúmaní spomínaných magnetických fázových prechodov. Vo všeobecnosti sú komplexnejšie, ako bežné neurónové siete. Okrem toho sú aj jednoduchšie interpretovateľné, čo má za následok, že sa dá ľahšie skúmať, ako sa model správa a na základe čoho robí svoje predikcie. Samozrejme grafové siete sú aplikovateľné na menšiu množinu úloh avšak verím, že pri správnom formulovaní problému môžu posunúť výskum vo fyzike dopredu.
+Pri potenciálnom pokračovaní by som opäť zvolil jazyk Python, kvôli širokej dostupnosti balíčkov v oblasti strojového učenia. Balíčky, ktoré by boli vhodné sú určite Pytorch Geometric a Tensorflow GNN. Grafové siete môžu byť užitočné pri skúmanie fyzikálnych problémov, pretože dokážu dobre pracovať so štruktúrou dát a vyjadriť interakcie medzi nimi. To môže byť vhodné napríklad pri skúmaní spomínaných magnetických fázových prechodov. Okrem toho sú aj jednoduchšie interpretovateľné, ako bežné neurónové siete. Teda je ľahšie pochopiť, ako sa model správa, na základe čoho robí svoje predikcie a či nie je náhodou pretrénovaný. Samozrejme grafové siete sú aplikovateľné na menšiu množinu úloh avšak verím, že pri správnom formulovaní problému môžu posunúť výskum vo fyzike dopredu.
 
 \bibliographystyle{plain}
 \bibliography{bibfile.bib}
